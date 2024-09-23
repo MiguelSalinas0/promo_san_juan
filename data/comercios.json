@@ -1,0 +1,34 @@
+{
+  "comercios": [
+    {
+      "id": 1,
+      "nombre": "La Buena Mesa",
+      "url_imagen": "assets/comercios/la_buena_mesa.jpg",
+      "descripcion": "Restaurante de cocina tradicional con un toque moderno."
+    },
+    {
+      "id": 2,
+      "nombre": "Supermercado Central",
+      "url_imagen": "assets/comercios/supermercado_central.jpg",
+      "descripcion": "Supermercado con productos frescos y de calidad."
+    },
+    {
+      "id": 3,
+      "nombre": "Café Aromas",
+      "url_imagen": "assets/comercios/cafe_aromas.jpg",
+      "descripcion": "Cafetería acogedora especializada en café gourmet."
+    },
+    {
+      "id": 4,
+      "nombre": "Panadería Delicias",
+      "url_imagen": "assets/comercios/panaderia_delicas.jpg",
+      "descripcion": "Panadería artesanal con productos horneados diariamente."
+    },
+    {
+      "id": 5,
+      "nombre": "Tienda Verde",
+      "url_imagen": "assets/comercios/tienda_verde.jpg",
+      "descripcion": "Tienda de productos orgánicos y sostenibles."
+    }
+  ]
+}
