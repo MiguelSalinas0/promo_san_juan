@@ -15,7 +15,7 @@ class MyApp extends StatelessWidget {
       getPages: AppRouter.routes,
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        primaryColor: primaryColor,
+        primaryColor: const Color.fromARGB(255, 255, 255, 255),
         colorScheme: ColorScheme.fromSwatch().copyWith(secondary: primaryColor),
         useMaterial3: true,
       ),

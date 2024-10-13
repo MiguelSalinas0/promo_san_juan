@@ -43,7 +43,7 @@ class LoginScreen extends StatelessWidget {
                 Text(
                   'Promo San Juan',
                   style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                        color: const Color(0xFF00ADB5), // Color principal
+                        color: const Color(0xFF00ADB5)
                       ),
                 ),
                 const SizedBox(height: 30.0),

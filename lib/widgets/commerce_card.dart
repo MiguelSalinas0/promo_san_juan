@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:promo_san_juan/screens/detail/detail_screen.dart';
+import 'package:promo_san_juan/screens/detail_screen.dart';
 
 // Definimos el widget reutilizable
 class CommerceCard extends StatelessWidget {
@@ -21,9 +21,7 @@ class CommerceCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: () {
-        Get.to(() => DetailScreen(id: id));
-      },
+      onTap: () => Get.to(() => DetailScreen(id: id)),
       child: Card(
         margin: const EdgeInsets.all(10),
         shape: RoundedRectangleBorder(
@@ -36,13 +34,11 @@ class CommerceCard extends StatelessWidget {
                 topLeft: Radius.circular(15),
                 bottomLeft: Radius.circular(15),
               ),
-              child: SizedBox(
+              child: Image.asset(
+                urlImagen,
                 width: 100,
                 height: 110,
-                child: Image.asset(
-                  urlImagen,
-                  fit: BoxFit.cover,
-                ),
+                fit: BoxFit.cover,
               ),
             ),
             const SizedBox(width: 10),

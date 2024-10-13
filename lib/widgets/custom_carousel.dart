@@ -1,39 +1,125 @@
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:promo_san_juan/models/carousel.dart';
 
 class CustomCarousel extends StatelessWidget {
-  // Esta lista recibirá los elementos que el carrusel mostrará
-  final List<String> items;
+  final List<CarouselItem> items;
+  final Function(int commerceId) onItemTapped;
 
-  // Constructor para pasar la lista de elementos al widget
-  const CustomCarousel({super.key, required this.items});
+  const CustomCarousel({
+    super.key,
+    required this.items,
+    required this.onItemTapped,
+  });
 
   @override
   Widget build(BuildContext context) {
     return CarouselSlider(
       options: CarouselOptions(
-        height: 200.0,  // Altura del carrusel
-        autoPlay: true, // Reproducción automática
-        enlargeCenterPage: false, // Agranda el elemento central
-        enableInfiniteScroll: true, // Desliza infinitamente
+        height: 200.0,
+        autoPlay: true,
+        enlargeCenterPage: false,
+        enableInfiniteScroll: true,
       ),
-      items: items.map((item) {
-        return Container(
-          margin: const EdgeInsets.all(5.0),
-          decoration: BoxDecoration(
-            color: Colors.transparent,
-            borderRadius: BorderRadius.circular(10),
-          ),
-          child: ClipRRect(  // Añadir bordes redondeados a las imágenes
-            borderRadius: BorderRadius.circular(10),
-            child: Image.asset(
-              item, // Cargar la imagen desde el path
-              fit: BoxFit.cover, // Asegurar que la imagen cubra todo el espacio disponible
-              width: double.infinity, // Asegura que la imagen ocupe todo el ancho del contenedor
+      items: items.map((item) => _buildCarouselItem(item)).toList(),
+    );
+  }
+
+  Widget _buildCarouselItem(CarouselItem item) {
+    return GestureDetector(
+      onTap: () => onItemTapped(item.commerceId),
+      child: Stack(
+        children: [
+          _buildImage(item.imagePath),
+          _buildOverlay(),
+          _buildTextContent(item),
+        ],
+      ),
+    );
+  }
+
+  // Widget separado para la imagen con bordes redondeados
+  Widget _buildImage(String imagePath) {
+    return Container(
+      margin: const EdgeInsets.all(5.0),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(10),
+        child: Image.asset(
+          imagePath,
+          fit: BoxFit.cover,
+          width: double.infinity,
+          height: double.infinity,
+        ),
+      ),
+    );
+  }
+
+  // Widget para la capa oscura que se superpone sobre la imagen
+  Widget _buildOverlay() {
+    return Container(
+      margin: const EdgeInsets.all(5.0),
+      decoration: BoxDecoration(
+        color: Colors.black.withOpacity(0.5),
+        borderRadius: BorderRadius.circular(10),
+      ),
+    );
+  }
+
+  // Widget para el texto que aparece sobre la imagen
+  Widget _buildTextContent(CarouselItem item) {
+    return Positioned.fill(
+      child: Center(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              item.title,
+              style: _titleTextStyle(),
+              textAlign: TextAlign.center,
             ),
-          ),
-        );
-      }).toList(),
+            const SizedBox(height: 5),
+            Text(
+              item.subtitle,
+              style: _subtitleTextStyle(),
+              textAlign: TextAlign.center,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  // Función para el estilo del título
+  TextStyle _titleTextStyle() {
+    return const TextStyle(
+      fontSize: 24,
+      color: Colors.white,
+      fontWeight: FontWeight.bold,
+      shadows: [
+        Shadow(
+          blurRadius: 10.0,
+          color: Colors.black45,
+          offset: Offset(3.0, 3.0),
+        ),
+      ],
+    );
+  }
+
+  // Función para el estilo del subtítulo
+  TextStyle _subtitleTextStyle() {
+    return const TextStyle(
+      fontSize: 16,
+      color: Colors.white70,
+      shadows: [
+        Shadow(
+          blurRadius: 10.0,
+          color: Colors.black45,
+          offset: Offset(3.0, 3.0),
+        ),
+      ],
     );
   }
 }
