@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:promo_san_juan/models/carousel.dart';
-import 'package:promo_san_juan/screens/detail_screen.dart';
+import 'package:promo_san_juan/screens/usuario/detail_screen.dart';
 import 'package:promo_san_juan/widgets/commerce_card.dart';
 import 'package:promo_san_juan/widgets/custom_carousel.dart';
 import 'package:promo_san_juan/helper/database_helper.dart';
-import 'package:promo_san_juan/screens/search_screen.dart';
+import 'package:promo_san_juan/screens/usuario/search_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -21,12 +21,12 @@ class _HomeScreenState extends State<HomeScreen> {
     super.initState();
   }
 
-  Future<List<CarouselItem>> _cargarCarouselItems() async {
-    return await DatabaseHelper.instance.getCarouselItems();
-  }
-
   Future<List<Comercio>> _cargarComercios() async {
     return await DatabaseHelper.instance.getComercios();
+  }
+
+  Future<List<Promocion>> _cargarPromociones() async {
+    return await DatabaseHelper.instance.getAllPromotions();
   }
 
   void _navigateToCommerceDetail(int commerceId) {
@@ -77,15 +77,14 @@ class _HomeScreenState extends State<HomeScreen> {
             const SizedBox(height: 5),
 
             // Carrusel (FutureBuilder separado)
-            FutureBuilder<List<CarouselItem>>(
-              future: _cargarCarouselItems(),
+            FutureBuilder<List<Promocion>>(
+              future: _cargarPromociones(),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return const Center(child: CircularProgressIndicator());
                 } else if (snapshot.hasError) {
                   return const Center(
-                      child:
-                          Text('Error al cargar los elementos del carrusel'));
+                      child: Text('Error al cargar los elementos del carrusel'));
                 } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
                   return const Center(
                       child: Text('No se encontraron elementos del carrusel'));

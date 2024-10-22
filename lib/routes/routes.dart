@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:promo_san_juan/screens/register_screen.dart';
-import 'package:promo_san_juan/widgets/custom_bottom_nav_bar.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:promo_san_juan/screens/login_screen.dart';
@@ -33,8 +32,6 @@ class AppRouter {
             },
           ),
         ),
-        GetPage(name: '/home', page: () => const MainScreen()),
-        GetPage(name: '/map', page: () => const MainScreen()),
         GetPage(name: '/login', page: () => const LoginScreen()),
         GetPage(name: '/register', page: () => const RegisterScreen()),
       ];

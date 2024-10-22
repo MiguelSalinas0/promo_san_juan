@@ -35,7 +35,6 @@ flutter:
     - assets/comercios/
     - assets/carousel/
     - assets/profile_picture.png
-    - data/comercios.json
 
   fonts:
     - family: Mulish

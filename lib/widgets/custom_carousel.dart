@@ -3,7 +3,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:promo_san_juan/models/carousel.dart';
 
 class CustomCarousel extends StatelessWidget {
-  final List<CarouselItem> items;
+  final List<Promocion> items;
   final Function(int commerceId) onItemTapped;
 
   const CustomCarousel({
@@ -25,12 +25,12 @@ class CustomCarousel extends StatelessWidget {
     );
   }
 
-  Widget _buildCarouselItem(CarouselItem item) {
+  Widget _buildCarouselItem(Promocion item) {
     return GestureDetector(
       onTap: () => onItemTapped(item.commerceId),
       child: Stack(
         children: [
-          _buildImage(item.imagePath),
+          _buildImage('assets/carousel/frame_background.jpg'),
           _buildOverlay(),
           _buildTextContent(item),
         ],
@@ -69,7 +69,7 @@ class CustomCarousel extends StatelessWidget {
   }
 
   // Widget para el texto que aparece sobre la imagen
-  Widget _buildTextContent(CarouselItem item) {
+  Widget _buildTextContent(Promocion item) {
     return Positioned.fill(
       child: Center(
         child: Column(
@@ -82,7 +82,7 @@ class CustomCarousel extends StatelessWidget {
             ),
             const SizedBox(height: 5),
             Text(
-              item.subtitle,
+              item.description,
               style: _subtitleTextStyle(),
               textAlign: TextAlign.center,
             ),

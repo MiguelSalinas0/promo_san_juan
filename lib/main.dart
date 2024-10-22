@@ -18,6 +18,10 @@ class MyApp extends StatelessWidget {
         primaryColor: const Color.fromARGB(255, 255, 255, 255),
         colorScheme: ColorScheme.fromSwatch().copyWith(secondary: primaryColor),
         useMaterial3: true,
+        textSelectionTheme: const TextSelectionThemeData(
+          cursorColor: Color(0xFF00ADB5),
+          selectionHandleColor: Color(0xFF00ADB5),
+        ),
       ),
     );
   }

@@ -1,8 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:promo_san_juan/widgets/auth_service.dart';
 
-class LoginScreen extends StatelessWidget {
+class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
+
+  @override
+  // ignore: library_private_types_in_public_api
+  _LoginScreenState createState() => _LoginScreenState();
+}
+
+class _LoginScreenState extends State<LoginScreen> {
+  // const LoginScreen({super.key});
+
+  final emailController = TextEditingController();
+  final passwordController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -42,17 +54,28 @@ class LoginScreen extends StatelessWidget {
                 // Título
                 Text(
                   'Promo San Juan',
-                  style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                        color: const Color(0xFF00ADB5)
-                      ),
+                  style: Theme.of(context)
+                      .textTheme
+                      .headlineMedium
+                      ?.copyWith(color: const Color(0xFF00ADB5)),
                 ),
+
                 const SizedBox(height: 30.0),
 
                 // Input de email
                 SizedBox(
                   width: width,
                   child: TextField(
+                    controller: emailController,
                     decoration: InputDecoration(
+                      floatingLabelStyle: const TextStyle(color: Color(0xFF00ADB5)),
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: const BorderSide(
+                          color: Color(0xFF00ADB5),
+                          width: 2.0,
+                        ),
+                        borderRadius: BorderRadius.circular(8.0),
+                      ),
                       labelText: 'Email',
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(8.0),
@@ -72,7 +95,16 @@ class LoginScreen extends StatelessWidget {
                 SizedBox(
                   width: width,
                   child: TextField(
+                    controller: passwordController,
                     decoration: InputDecoration(
+                      floatingLabelStyle: const TextStyle(color: Color(0xFF00ADB5)),
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: const BorderSide(
+                          color: Color(0xFF00ADB5),
+                          width: 2.0,
+                        ),
+                        borderRadius: BorderRadius.circular(8.0),
+                      ),
                       labelText: 'Contraseña',
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(8.0),
@@ -86,6 +118,7 @@ class LoginScreen extends StatelessWidget {
                     obscureText: true,
                   ),
                 ),
+
                 const SizedBox(height: 30.0),
 
                 // Botón "Ingresar"
@@ -93,12 +126,11 @@ class LoginScreen extends StatelessWidget {
                   width: width,
                   child: ElevatedButton(
                     onPressed: () {
-                      Get.offAllNamed('/home');
+                      AuthService.login(context, emailController.text, passwordController.text);
                     },
                     style: ElevatedButton.styleFrom(
                       elevation: 5,
-                      backgroundColor:
-                          const Color(0xFF00ADB5), // Color principal
+                      backgroundColor:const Color(0xFF00ADB5), // Color principal
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(50.0),
                       ),
@@ -110,6 +142,7 @@ class LoginScreen extends StatelessWidget {
                     ),
                   ),
                 ),
+
                 const SizedBox(height: 10.0),
 
                 // Botón "Crear cuenta"
@@ -121,8 +154,7 @@ class LoginScreen extends StatelessWidget {
                     },
                     style: ElevatedButton.styleFrom(
                       elevation: 5,
-                      backgroundColor:
-                          Colors.white, // Color para el botón de crear cuenta
+                      backgroundColor:Colors.white, // Color para el botón de crear cuenta
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(50.0),
                       ),
@@ -134,6 +166,7 @@ class LoginScreen extends StatelessWidget {
                     ),
                   ),
                 ),
+
                 const SizedBox(height: 10.0),
 
                 // ¿Olvidaste la contraseña?

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:promo_san_juan/screens/detail_screen.dart';
+import 'package:promo_san_juan/screens/usuario/detail_screen.dart';
 
 // Definimos el widget reutilizable
 class CommerceCard extends StatelessWidget {
