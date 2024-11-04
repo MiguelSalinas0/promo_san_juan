@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:promo_san_juan/helper/database_helper.dart';
-import 'package:promo_san_juan/models/carousel.dart';
+import 'package:promo_san_juan/models/models.dart';
 import 'package:promo_san_juan/widgets/commerce_card.dart';
 
 class SearchScreen extends StatefulWidget {
@@ -90,6 +90,7 @@ class _SearchScreenState extends State<SearchScreen> {
                         nombre: comercio.name,
                         descripcion: comercio.descripcion,
                         urlImagen: comercio.imagePath,
+                        isAdmin: false,
                       );
                     },
                   ),

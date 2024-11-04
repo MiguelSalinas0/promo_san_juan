@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:promo_san_juan/helper/database_helper.dart';
-import 'package:promo_san_juan/models/carousel.dart';
+import 'package:promo_san_juan/models/models.dart';
 import 'package:promo_san_juan/widgets/admin_main_screen.dart';
 import 'package:promo_san_juan/widgets/commerce_main_screen.dart';
 import 'package:promo_san_juan/widgets/user_main_screen%20.dart';

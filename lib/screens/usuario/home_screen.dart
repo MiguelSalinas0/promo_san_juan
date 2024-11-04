@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:promo_san_juan/models/carousel.dart';
-import 'package:promo_san_juan/screens/usuario/detail_screen.dart';
+import 'package:promo_san_juan/models/models.dart';
+import 'package:promo_san_juan/screens/usuario/promotion_detail_screen.dart';
 import 'package:promo_san_juan/widgets/commerce_card.dart';
 import 'package:promo_san_juan/widgets/custom_carousel.dart';
 import 'package:promo_san_juan/helper/database_helper.dart';
@@ -22,15 +22,15 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future<List<Comercio>> _cargarComercios() async {
-    return await DatabaseHelper.instance.getComercios();
+    return await DatabaseHelper.instance.getComerciosUser();
   }
 
   Future<List<Promocion>> _cargarPromociones() async {
     return await DatabaseHelper.instance.getAllPromotions();
   }
 
-  void _navigateToCommerceDetail(int commerceId) {
-    Get.to(() => DetailScreen(id: commerceId));
+  void _navigateToPromotionDetail(int promotionId) {
+    Get.to(() => PromotionDetailScreen(id: promotionId));
   }
 
   // Método para navegar a la pantalla de búsqueda
@@ -93,7 +93,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 final carouselItems = snapshot.data!;
                 return CustomCarousel(
                   items: carouselItems,
-                  onItemTapped: _navigateToCommerceDetail,
+                  onItemTapped: _navigateToPromotionDetail,
                 );
               },
             ),
@@ -135,6 +135,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       nombre: comercio.name,
                       descripcion: comercio.descripcion,
                       urlImagen: comercio.imagePath,
+                      isAdmin: false,
                     );
                   },
                 );

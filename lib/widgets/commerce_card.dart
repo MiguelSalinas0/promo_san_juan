@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:promo_san_juan/screens/admin/admin_commerce_detail.dart';
 import 'package:promo_san_juan/screens/usuario/detail_screen.dart';
 
 // Definimos el widget reutilizable
@@ -8,6 +9,7 @@ class CommerceCard extends StatelessWidget {
   final String nombre;
   final String descripcion;
   final String urlImagen;
+  final bool isAdmin;
 
   // Constructor para recibir los datos del comercio
   const CommerceCard({
@@ -16,12 +18,19 @@ class CommerceCard extends StatelessWidget {
     required this.nombre,
     required this.descripcion,
     required this.urlImagen,
+    required this.isAdmin,
   });
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: () => Get.to(() => DetailScreen(id: id)),
+      onTap: () {
+        if (isAdmin) {
+          Get.to(() => AdminDetailScreen(id: id));
+        } else {
+          Get.to(() => DetailScreen(id: id));
+        }
+      },
       child: Card(
         margin: const EdgeInsets.all(10),
         shape: RoundedRectangleBorder(

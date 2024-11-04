@@ -1,5 +1,5 @@
 import 'package:path/path.dart';
-import 'package:promo_san_juan/models/carousel.dart';
+import 'package:promo_san_juan/models/models.dart';
 import 'package:sqflite/sqflite.dart';
 
 class DatabaseHelper {
@@ -32,13 +32,44 @@ class DatabaseHelper {
   }
 
   // Obtener todas las promociones
+  // Future<List<Promocion>> getAllPromotions() async {
+  //   final db = await instance.database;
+  //   final List<Map<String, dynamic>> result = await db.query(
+  //     tablePromociones,
+  //     where: 'activo = 1'
+  //   );
+  //   return result.map((promo) => Promocion.fromMap(promo)).toList();
+  // }
+
   Future<List<Promocion>> getAllPromotions() async {
+  final db = await instance.database;
+  final List<Map<String, dynamic>> result = await db.rawQuery('''
+    SELECT p.*
+    FROM $tablePromociones p
+    INNER JOIN $tableDetalleComercios c ON p.commerceId = c.commerceId
+    WHERE p.activo = 1 AND c.isHabilitado = 1
+  ''');
+
+  return result.map((promo) => Promocion.fromMap(promo)).toList();
+}
+
+
+  // Obtener una promocion por id
+  Future<Promocion?> getPromotionById(int id) async {
     final db = await instance.database;
-    final List<Map<String, dynamic>> result = await db.query(tablePromociones);
-    return result.map((promo) => Promocion.fromMap(promo)).toList();
+    final result = await db.query(
+      tablePromociones,
+      where: 'id = ?',
+      whereArgs: [id],
+    );
+
+    if (result.isNotEmpty) {
+      return Promocion.fromMap(result.first);
+    }
+    return null;
   }
 
-  // Obtener promociones por comercio
+  // Obtener promociones por comercio (para la vista de comercio)
   Future<List<Promocion>> getPromotionsByCommerce(int commerceId) async {
     final db = await instance.database;
     final List<Map<String, dynamic>> result = await db.query(
@@ -95,7 +126,7 @@ class DatabaseHelper {
     return null;
   }
 
-  // Métodos para la tabla comercios
+  // Obtener todos los comercios (vista de admin, sin filtro de habilitación)
   Future<List<Comercio>> getComercios() async {
     final db = await instance.database;
     final List<Map<String, dynamic>> maps = await db.query(tableComercios);
@@ -109,6 +140,30 @@ class DatabaseHelper {
     });
   }
 
+  // Obtener todos los comercios habilitados (vista de usuario, con filtro de habilitación)
+  Future<List<Comercio>> getComerciosUser() async {
+    final db = await instance.database;
+
+    // Consulta que une ambas tablas y filtra por comercios habilitados
+    final List<Map<String, dynamic>> maps = await db.rawQuery('''
+    SELECT c.id, c.name, c.imagePath, c.descripcion
+    FROM $tableComercios AS c
+    INNER JOIN $tableDetalleComercios AS d ON c.id = d.commerceId
+    WHERE d.isHabilitado = 1
+  ''');
+
+    // Convertir los resultados en una lista de objetos Comercio
+    return List.generate(maps.length, (i) {
+      return Comercio(
+        id: maps[i]['id'],
+        name: maps[i]['name'],
+        imagePath: maps[i]['imagePath'],
+        descripcion: maps[i]['descripcion'],
+      );
+    });
+  }
+
+  // Obtener comercio por id
   Future<Comercio?> getComercioById(int id) async {
     final db = await instance.database;
 
@@ -131,6 +186,7 @@ class DatabaseHelper {
     }
   }
 
+  // Obtener los detalles de un comercio
   Future<ComercioDetalles?> getComercioDetallesById(int commerceId) async {
     final db = await instance.database;
 
@@ -144,35 +200,63 @@ class DatabaseHelper {
         'descripcion',
         'direccion',
         'telefono',
-        'horario'
+        'horario',
+        'isHabilitado'
       ],
       where: 'commerceId = ?',
       whereArgs: [commerceId],
     );
 
     if (maps.isNotEmpty) {
-      return ComercioDetalles(
-        id: maps.first['id'] as int,
-        commerceId: maps.first['commerceId'] as int,
-        name: maps.first['name'] as String,
-        imagePath: maps.first['imagePath'] as String,
-        descripcion: maps.first['descripcion'] as String,
-        direccion: maps.first['direccion'] as String,
-        telefono: maps.first['telefono'] as String,
-        horario: maps.first['horario'] as String,
-      );
+      return ComercioDetalles.fromMap(maps.first);
     } else {
       return null;
     }
   }
 
+  // Obtener si el comercio esta habilitado (vista del comercio)
+  Future<bool> consultarHabilitacion(int commerceId) async {
+    final db = await instance.database;
+
+    final result = await db.query(
+      tableDetalleComercios,
+      columns: ['isHabilitado'],
+      where: 'commerceId = ?',
+      whereArgs: [commerceId],
+    );
+
+    if (result.isNotEmpty){
+      return result.first['isHabilitado'] == 1;
+    } else {
+      return false;
+    }
+  }
+
+  // Update habilitación
+  Future<ComercioDetalles?> updateComercioHabilitacion(int commerceId, bool value) async {
+    final db = await instance.database;
+
+    int habilitadoValue = value ? 1 : 0;
+    await db.update(
+      tableDetalleComercios,
+      {'isHabilitado': habilitadoValue},
+      where: 'id = ?',
+      whereArgs: [commerceId],
+    );
+
+    return getComercioDetallesById(commerceId);
+  }
+
   Future _onCreate(Database db, int version) async {
     await db.execute('''
       CREATE TABLE $tablePromociones (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        title TEXT NOT NULL,
-        description TEXT NOT NULL,
-        commerceId INTEGER
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      title TEXT NOT NULL,
+      description TEXT NOT NULL,
+      commerceId INTEGER,
+      activo INTEGER NOT NULL, 
+      fechaInicio TEXT NOT NULL,
+      fechaFin TEXT NOT NULL
       )
     ''');
 
@@ -203,7 +287,8 @@ class DatabaseHelper {
       descripcion TEXT,
       direccion TEXT,
       telefono TEXT,
-      horario TEXT
+      horario TEXT,
+      isHabilitado INTEGER NOT NULL
     )
   ''');
 
@@ -212,18 +297,27 @@ class DatabaseHelper {
       'title': 'Descuento 2x1',
       'description': '2x1 en todos los articulos seleccionados',
       'commerceId': 2,
+      'activo': 1,
+      'fechaInicio': DateTime(2024, 11, 1).toIso8601String(),
+      'fechaFin': DateTime(2024, 12, 1).toIso8601String(),
     });
 
     await db.insert(tablePromociones, {
       'title': '2x1 en Auriculares',
       'description': 'Lleva 2 por el precio de 1 en auriculares',
       'commerceId': 2,
+      'activo': 1,
+      'fechaInicio': DateTime(2024, 11, 5).toIso8601String(),
+      'fechaFin': DateTime(2024, 11, 30).toIso8601String(),
     });
 
     await db.insert(tablePromociones, {
       'title': 'Descuento 10%',
       'description': '10% de descuento en productos seleccionados',
-      'commerceId': 2,
+      'commerceId': 3,
+      'activo': 1,
+      'fechaInicio': DateTime(2024, 10, 1).toIso8601String(),
+      'fechaFin': DateTime(2024, 10, 31).toIso8601String(),
     });
 
     // Insertar datos de usuarios
@@ -235,6 +329,12 @@ class DatabaseHelper {
 
     await db.insert(tableUsuarios, {
       'email': 'comercio@gmail.com',
+      'password': '12345',
+      'role': 'comercio',
+    });
+
+    await db.insert(tableUsuarios, {
+      'email': 'comercio2@gmail.com',
       'password': '12345',
       'role': 'comercio',
     });
@@ -264,18 +364,6 @@ class DatabaseHelper {
       'descripcion': 'Cafetería acogedora especializada en café gourmet.',
     });
 
-    await db.insert(tableComercios, {
-      'name': 'Panadería Delicias',
-      'imagePath': 'assets/comercios/panaderia_delicias.jpg',
-      'descripcion': 'Panadería artesanal con productos horneados diariamente.',
-    });
-
-    await db.insert(tableComercios, {
-      'name': 'Tienda Verde',
-      'imagePath': 'assets/comercios/tienda_verde.jpg',
-      'descripcion': 'Tienda de productos orgánicos y sostenibles.',
-    });
-
     // Inserción de detalles de comercios
     await db.insert(tableDetalleComercios, {
       'commerceId': 1,
@@ -285,6 +373,7 @@ class DatabaseHelper {
       'direccion': 'Calle Falsa 123',
       'telefono': '123-456-7890',
       'horario': '9:00 AM - 11:00 PM',
+      'isHabilitado': 1
     });
 
     await db.insert(tableDetalleComercios, {
@@ -295,6 +384,7 @@ class DatabaseHelper {
       'direccion': 'Avenida Siempre Viva 456',
       'telefono': '987-654-3210',
       'horario': '8:00 AM - 10:00 PM',
+      'isHabilitado': 1
     });
 
     await db.insert(tableDetalleComercios, {
@@ -305,6 +395,7 @@ class DatabaseHelper {
       'direccion': 'Plaza Central, Local 8',
       'telefono': '555-123-9876',
       'horario': '7:00 AM - 8:00 PM',
+      'isHabilitado': 1
     });
   }
 }

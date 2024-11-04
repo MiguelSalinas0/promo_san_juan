@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
-import 'package:promo_san_juan/models/carousel.dart';
+import 'package:promo_san_juan/models/models.dart';
 
 class CustomCarousel extends StatelessWidget {
   final List<Promocion> items;
-  final Function(int commerceId) onItemTapped;
+  final Function(int promotionId) onItemTapped;
 
   const CustomCarousel({
     super.key,
@@ -27,7 +27,7 @@ class CustomCarousel extends StatelessWidget {
 
   Widget _buildCarouselItem(Promocion item) {
     return GestureDetector(
-      onTap: () => onItemTapped(item.commerceId),
+      onTap: () => onItemTapped(item.id!),
       child: Stack(
         children: [
           _buildImage('assets/carousel/frame_background.jpg'),

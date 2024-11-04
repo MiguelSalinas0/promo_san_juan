@@ -3,12 +3,18 @@ class Promocion {
   late final String title;
   late final String description;
   final int commerceId;
+  bool activo;
+  DateTime fechaInicio;
+  DateTime fechaFin;
 
   Promocion({
     this.id,
     required this.title,
     required this.description,
     required this.commerceId,
+    required this.activo,
+    required this.fechaInicio,
+    required this.fechaFin,
   });
 
   // Método para convertir un mapa en un objeto Promocion
@@ -18,6 +24,9 @@ class Promocion {
       title: map['title'],
       description: map['description'],
       commerceId: map['commerceId'],
+      activo: map['activo'] == 1, // Asume que en la base de datos, 1 es true y 0 es false
+      fechaInicio: DateTime.parse(map['fechaInicio']),
+      fechaFin: DateTime.parse(map['fechaFin']),
     );
   }
 
@@ -28,6 +37,9 @@ class Promocion {
       'title': title,
       'description': description,
       'commerceId': commerceId,
+      'activo': activo ? 1 : 0, // Convertimos a 1 o 0 para base de datos
+      'fechaInicio': fechaInicio.toIso8601String(),
+      'fechaFin': fechaFin.toIso8601String(),
     };
   }
 }
@@ -54,17 +66,48 @@ class ComercioDetalles {
   final String direccion;
   final String telefono;
   final String horario;
+  bool isHabilitado;
 
-  ComercioDetalles({
-    required this.id,
-    required this.commerceId,
-    required this.name,
-    required this.imagePath,
-    required this.descripcion,
-    required this.direccion,
-    required this.telefono,
-    required this.horario,
-  });
+  ComercioDetalles(
+      {required this.id,
+      required this.commerceId,
+      required this.name,
+      required this.imagePath,
+      required this.descripcion,
+      required this.direccion,
+      required this.telefono,
+      required this.horario,
+      required this.isHabilitado});
+
+  // Método para convertir la instancia en un mapa
+  Map<String, dynamic> toMap() {
+    return {
+      'id': id,
+      'commerceId': commerceId,
+      'name': name,
+      'imagePath': imagePath,
+      'descripcion': descripcion,
+      'direccion': direccion,
+      'telefono': telefono,
+      'horario': horario,
+      'isHabilitado': isHabilitado ? 1 : 0,
+    };
+  }
+
+  // Método para crear una instancia a partir de un mapa
+  factory ComercioDetalles.fromMap(Map<String, dynamic> map) {
+    return ComercioDetalles(
+      id: map['id'],
+      commerceId: map['commerceId'],
+      name: map['name'],
+      imagePath: map['imagePath'],
+      descripcion: map['descripcion'],
+      direccion: map['direccion'],
+      telefono: map['telefono'],
+      horario: map['horario'],
+      isHabilitado: map['isHabilitado'] == 1, // Convertir int a booleano
+    );
+  }
 }
 
 class User {

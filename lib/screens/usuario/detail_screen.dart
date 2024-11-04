@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:promo_san_juan/helper/database_helper.dart';
-import 'package:promo_san_juan/models/carousel.dart';
+import 'package:promo_san_juan/models/models.dart';
 
 class DetailScreen extends StatefulWidget {
   const DetailScreen({super.key, required this.id});
