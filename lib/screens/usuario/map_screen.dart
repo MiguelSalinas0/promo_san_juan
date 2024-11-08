@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:promo_san_juan/helper/database_helper.dart';
 
 class MapScreen extends StatelessWidget {
   const MapScreen({super.key});
@@ -29,14 +30,26 @@ class MapWidgetState extends State<MapWidget> {
   LatLng _currentPosition = const LatLng(-31.5375, -68.536389); // Ubicación predeterminada
   late MapController _mapController;
   bool _hasLocation = false;
+  List<Map<String, dynamic>> _comercios = []; // Lista de comercios
+
+  // Llama a getLocations y almacena los datos en _comercios
+  Future<void> _loadComercios() async {
+    final comercios = await DatabaseHelper.instance.getLocations();
+    setState(() {
+      _comercios = comercios;
+      _hasLocation = true;
+    });
+  }
 
   @override
   void initState() {
     super.initState();
     _mapController = MapController();
     _initializeLocation();
+    _loadComercios();
     _startLocationUpdates(); // Inicia la actualización de la ubicación en tiempo real
   }
+
 
   void _initializeLocation() async {
     LatLng position = await _determinePosition();
@@ -116,10 +129,40 @@ class MapWidgetState extends State<MapWidget> {
                     point: _currentPosition,
                     child: const Icon(
                       Icons.location_on,
-                      size: 40,
+                      size: 30,
                       color: Colors.red,
                     ),
                   ),
+                  // Marcadores personalizados para los comercios
+                  for (var comercio in _comercios)
+                    Marker(
+                      width: 80,
+                      height: 80,
+                      point: comercio['location'],
+                      child: GestureDetector(
+                        onTap: () {
+                          // Mostrar información del comercio
+                          showDialog(
+                            context: context,
+                            builder: (context) => AlertDialog(
+                              title: Text(comercio['name']),
+                              content: Text(comercio['description']),
+                              actions: [
+                                TextButton(
+                                  onPressed: () => Navigator.pop(context),
+                                  child: const Text('Cerrar'),
+                                ),
+                              ],
+                            ),
+                          );
+                        },
+                        child: const Icon(
+                          Icons.store,
+                          size: 30,
+                          color: Colors.blue,
+                        ),
+                      ),
+                    ),
                 ],
               ),
             ],

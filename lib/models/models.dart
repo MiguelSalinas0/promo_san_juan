@@ -66,6 +66,8 @@ class ComercioDetalles {
   final String direccion;
   final String telefono;
   final String horario;
+  final double lat;
+  final double long;
   bool isHabilitado;
 
   ComercioDetalles(
@@ -77,7 +79,9 @@ class ComercioDetalles {
       required this.direccion,
       required this.telefono,
       required this.horario,
-      required this.isHabilitado});
+      required this.isHabilitado,
+      required this.lat,
+      required this.long});
 
   // Método para convertir la instancia en un mapa
   Map<String, dynamic> toMap() {
@@ -91,6 +95,8 @@ class ComercioDetalles {
       'telefono': telefono,
       'horario': horario,
       'isHabilitado': isHabilitado ? 1 : 0,
+      'lat': lat,
+      'long': long
     };
   }
 
@@ -106,6 +112,8 @@ class ComercioDetalles {
       telefono: map['telefono'],
       horario: map['horario'],
       isHabilitado: map['isHabilitado'] == 1, // Convertir int a booleano
+      lat: map['lat'],
+      long: map['long']
     );
   }
 }

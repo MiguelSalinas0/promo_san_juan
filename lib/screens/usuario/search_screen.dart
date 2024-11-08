@@ -26,7 +26,7 @@ class _SearchScreenState extends State<SearchScreen> {
   }
 
   Future<void> _loadComercios() async {
-    final comercios = await DatabaseHelper.instance.getComercios();
+    final comercios = await DatabaseHelper.instance.getComerciosUser();
     setState(() {
       _comercios = comercios;
       _filteredComercios = comercios;

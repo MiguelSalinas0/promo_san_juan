@@ -1,6 +1,7 @@
 import 'package:path/path.dart';
 import 'package:promo_san_juan/models/models.dart';
 import 'package:sqflite/sqflite.dart';
+import 'package:latlong2/latlong.dart';
 
 class DatabaseHelper {
   static final DatabaseHelper instance = DatabaseHelper._privateConstructor();
@@ -30,16 +31,6 @@ class DatabaseHelper {
       onCreate: _onCreate,
     );
   }
-
-  // Obtener todas las promociones
-  // Future<List<Promocion>> getAllPromotions() async {
-  //   final db = await instance.database;
-  //   final List<Map<String, dynamic>> result = await db.query(
-  //     tablePromociones,
-  //     where: 'activo = 1'
-  //   );
-  //   return result.map((promo) => Promocion.fromMap(promo)).toList();
-  // }
 
   Future<List<Promocion>> getAllPromotions() async {
   final db = await instance.database;
@@ -126,6 +117,26 @@ class DatabaseHelper {
     return null;
   }
 
+  // Obtener datos de ubicacion de comercios (pantalla de mapa)
+  Future<List<Map<String, dynamic>>> getLocations() async {
+    final db = await instance.database;
+
+    final List<Map<String, dynamic>> result = await db.rawQuery('''
+    SELECT name, descripcion, lat, long
+    FROM $tableDetalleComercios
+    WHERE isHabilitado = 1
+  ''');
+
+    // Convertir el resultado en una lista de Map en el formato requerido
+    return result.map((map) {
+      return {
+        'name': map['name'],
+        'location': LatLng(map['lat'], map['long']),
+        'description': map['descripcion'],
+      };
+    }).toList();
+  }
+
   // Obtener todos los comercios (vista de admin, sin filtro de habilitación)
   Future<List<Comercio>> getComercios() async {
     final db = await instance.database;
@@ -201,7 +212,9 @@ class DatabaseHelper {
         'direccion',
         'telefono',
         'horario',
-        'isHabilitado'
+        'isHabilitado',
+        'lat',
+        'long'
       ],
       where: 'commerceId = ?',
       whereArgs: [commerceId],
@@ -288,7 +301,9 @@ class DatabaseHelper {
       direccion TEXT,
       telefono TEXT,
       horario TEXT,
-      isHabilitado INTEGER NOT NULL
+      isHabilitado INTEGER NOT NULL,
+      lat REAL,
+      long REAL
     )
   ''');
 
@@ -373,7 +388,9 @@ class DatabaseHelper {
       'direccion': 'Calle Falsa 123',
       'telefono': '123-456-7890',
       'horario': '9:00 AM - 11:00 PM',
-      'isHabilitado': 1
+      'isHabilitado': 1,
+      'lat': -31.535,
+      'long': -68.532
     });
 
     await db.insert(tableDetalleComercios, {
@@ -384,7 +401,9 @@ class DatabaseHelper {
       'direccion': 'Avenida Siempre Viva 456',
       'telefono': '987-654-3210',
       'horario': '8:00 AM - 10:00 PM',
-      'isHabilitado': 1
+      'isHabilitado': 1,
+      'lat': -31.533,
+      'long': -68.537
     });
 
     await db.insert(tableDetalleComercios, {
@@ -395,7 +414,9 @@ class DatabaseHelper {
       'direccion': 'Plaza Central, Local 8',
       'telefono': '555-123-9876',
       'horario': '7:00 AM - 8:00 PM',
-      'isHabilitado': 1
+      'isHabilitado': 1,
+      'lat': -31.5375,
+      'long': -68.5364
     });
   }
 }
