@@ -1,7 +1,7 @@
 name: promo_san_juan
 description: "A new Flutter project."
 
-publish_to: 'none'
+publish_to: "none"
 
 version: 1.0.0+1
 
@@ -21,6 +21,8 @@ dependencies:
   sqflite: ^2.3.3+2
   path: ^1.9.0
   geolocator: ^12.0.0
+  qr_flutter: ^4.1.0
+  share_plus: ^10.1.2
 
 dev_dependencies:
   flutter_lints: ^4.0.0
@@ -28,7 +30,6 @@ dev_dependencies:
     sdk: flutter
 
 flutter:
-
   uses-material-design: true
 
   assets:

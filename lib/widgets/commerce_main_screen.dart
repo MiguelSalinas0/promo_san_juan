@@ -1,3 +1,5 @@
+// ignore_for_file: library_private_types_in_public_api
+
 import 'package:flutter/material.dart';
 import 'package:promo_san_juan/screens/commerce/home_commerce_screen.dart';
 import 'package:promo_san_juan/screens/commerce/profile_commerce_screen.dart';
@@ -6,7 +8,6 @@ class CommerceMainScreen extends StatefulWidget {
   const CommerceMainScreen({super.key});
 
   @override
-  // ignore: library_private_types_in_public_api
   _CommerceMainScreenState createState() => _CommerceMainScreenState();
 }
 

@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
 import 'package:promo_san_juan/helper/database_helper.dart';
 import 'package:promo_san_juan/models/models.dart';
@@ -32,28 +34,24 @@ class AuthService {
             AuthService()._saveId(user.id!);
           }
           Navigator.pushReplacement(
-            // ignore: use_build_context_synchronously
             context,
             MaterialPageRoute(builder: (context) => const CommerceMainScreen()),
           );
           break;
         case 'usuario':
           Navigator.pushReplacement(
-            // ignore: use_build_context_synchronously
             context,
             MaterialPageRoute(builder: (context) => const UserMainScreen()),
           );
           break;
         case 'admin':
           Navigator.pushReplacement(
-            // ignore: use_build_context_synchronously
             context,
             MaterialPageRoute(builder: (context) => const AdminMainScreen()),
           );
           break;
       }
     } else {
-      // ignore: use_build_context_synchronously
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
             content: Text('Email o contraseña incorrecto')),
