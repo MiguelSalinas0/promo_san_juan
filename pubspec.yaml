@@ -1,0 +1,47 @@
+name: promo_san_juan
+description: "A new Flutter project."
+
+publish_to: "none"
+
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.5.0
+
+dependencies:
+  cupertino_icons: ^1.0.8
+  flutter:
+    sdk: flutter
+  get: ^4.6.6
+  shared_preferences: ^2.3.2
+  carousel_slider: ^5.0.0
+  flutter_map: ^7.0.2
+  latlong2: ^0.9.1
+  flutter_map_cancellable_tile_provider: ^3.0.2
+  sqflite: ^2.3.3+2
+  path: ^1.9.0
+  geolocator: ^12.0.0
+  qr_flutter: ^4.1.0
+  share_plus: ^10.1.2
+  mapbox_gl: ^0.16.0
+  http: ^1.2.2
+
+dev_dependencies:
+  flutter_lints: ^4.0.0
+  flutter_test:
+    sdk: flutter
+
+flutter:
+  uses-material-design: true
+
+  assets:
+    - assets/images/
+    - assets/comercios/
+    - assets/carousel/
+    - assets/profile_picture.png
+
+  fonts:
+    - family: Mulish
+      fonts:
+        - asset: assets/fonts/Mulish-Light.ttf
+        - asset: assets/fonts/Mulish-SemiBold.ttf
