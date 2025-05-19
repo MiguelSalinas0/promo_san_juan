@@ -32,18 +32,18 @@ class DatabaseHelper {
     );
   }
 
+  // Obtener todas las promociones (vista de usuario)
   Future<List<Promocion>> getAllPromotions() async {
-  final db = await instance.database;
-  final List<Map<String, dynamic>> result = await db.rawQuery('''
+    final db = await instance.database;
+    final List<Map<String, dynamic>> result = await db.rawQuery('''
     SELECT p.*
     FROM $tablePromociones p
     INNER JOIN $tableDetalleComercios c ON p.commerceId = c.commerceId
     WHERE p.activo = 1 AND c.isHabilitado = 1
   ''');
 
-  return result.map((promo) => Promocion.fromMap(promo)).toList();
-}
-
+    return result.map((promo) => Promocion.fromMap(promo)).toList();
+  }
 
   // Obtener una promocion por id
   Future<Promocion?> getPromotionById(int id) async {
@@ -135,6 +135,30 @@ class DatabaseHelper {
         'description': map['descripcion'],
       };
     }).toList();
+  }
+
+// Obtener datos de ubicación de un comercio por su ID
+  Future<LatLng?> getLocationById(int idComercio) async {
+    final db = await instance.database;
+
+    final location = await db.query(
+      tableDetalleComercios,
+      columns: ['lat', 'long'],
+      where: 'id = ?',
+      whereArgs: [idComercio],
+    );
+
+    if (location.isNotEmpty) {
+      final lat = location.first['lat'];
+      final long = location.first['long'];
+
+      return LatLng(
+        (lat is int) ? lat.toDouble() : lat as double,
+        (long is int) ? long.toDouble() : long as double,
+      );
+    } else {
+      return null; // No se encontró un comercio con ese ID
+    }
   }
 
   // Obtener todos los comercios (vista de admin, sin filtro de habilitación)
@@ -238,7 +262,7 @@ class DatabaseHelper {
       whereArgs: [commerceId],
     );
 
-    if (result.isNotEmpty){
+    if (result.isNotEmpty) {
       return result.first['isHabilitado'] == 1;
     } else {
       return false;
@@ -246,7 +270,8 @@ class DatabaseHelper {
   }
 
   // Update habilitación
-  Future<ComercioDetalles?> updateComercioHabilitacion(int commerceId, bool value) async {
+  Future<ComercioDetalles?> updateComercioHabilitacion(
+      int commerceId, bool value) async {
     final db = await instance.database;
 
     int habilitadoValue = value ? 1 : 0;
@@ -389,8 +414,8 @@ class DatabaseHelper {
       'telefono': '123-456-7890',
       'horario': '9:00 AM - 11:00 PM',
       'isHabilitado': 1,
-      'lat': -31.535,
-      'long': -68.532
+      'lat': -31.551255327323908,
+      'long': -68.54143522853005
     });
 
     await db.insert(tableDetalleComercios, {
@@ -415,8 +440,8 @@ class DatabaseHelper {
       'telefono': '555-123-9876',
       'horario': '7:00 AM - 8:00 PM',
       'isHabilitado': 1,
-      'lat': -31.5375,
-      'long': -68.5364
+      'lat': -31.52853125160821,
+      'long': -68.53709612809254
     });
   }
 }
