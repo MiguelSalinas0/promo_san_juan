@@ -427,8 +427,8 @@ class DatabaseHelper {
       'telefono': '987-654-3210',
       'horario': '8:00 AM - 10:00 PM',
       'isHabilitado': 1,
-      'lat': -31.533,
-      'long': -68.537
+      'lat': -31.545059,
+      'long': -68.525484
     });
 
     await db.insert(tableDetalleComercios, {
