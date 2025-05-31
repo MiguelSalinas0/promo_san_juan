@@ -11,7 +11,8 @@ import 'package:promo_san_juan/helper/database_helper.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
-const accessToken = 'pk.eyJ1IjoibGlua2kwMSIsImEiOiJjbTEyYW5rZHAwOXlxMmpvajluanp5N3hrIn0.r4FH60zZeLINaSHBaK1HBQ';
+const accessToken =
+    'pk.eyJ1IjoibGlua2kwMSIsImEiOiJjbTEyYW5rZHAwOXlxMmpvajluanp5N3hrIn0.r4FH60zZeLINaSHBaK1HBQ';
 
 class MapScreen extends StatelessWidget {
   const MapScreen({super.key});
@@ -39,15 +40,18 @@ class MapWidgetState extends State<MapWidget> {
   StreamSubscription<CompassEvent>? _compassSubscription;
   StreamSubscription<Position>? _positionSubscription;
 
-  LatLng _currentPosition = const LatLng(-31.5375, -68.536389); // Ubicación predeterminada
+  LatLng _currentPosition =
+      const LatLng(-31.5375, -68.536389); // Ubicación predeterminada
   late MapController _mapController; // Controlador del mapa
   bool _hasLocation = false; // Bandera para verificar si se tiene la ubicación
   List<Map<String, dynamic>> _comercios = []; // Lista de comercios
   List<LatLng> _routePoints = []; // Lista para almacenar los puntos de la ruta
-  LatLng? _selectedDestination; // Almacena la ubicación seleccionada por el usuario
-  List<Map<String, dynamic>> _navigationSteps = []; // Lista para almacenar los pasos de navegación
+  LatLng?
+      _selectedDestination; // Almacena la ubicación seleccionada por el usuario
+  List<Map<String, dynamic>> _navigationSteps =
+      []; // Lista para almacenar los pasos de navegación
   String? _instruccionActual; // Almacena la instrucción actual
-  int _pasoActual = 0; 
+  int _pasoActual = 0;
   LatLng? _lastUpdatedPosition; // Almacena la última posición actualizada
   final double _minDistanceForUpdate = 20; // Metros
 
@@ -107,7 +111,8 @@ class MapWidgetState extends State<MapWidget> {
       }
 
       if (permission == LocationPermission.deniedForever) {
-        throw Exception('El permiso de ubicación está permanentemente denegado.');
+        throw Exception(
+            'El permiso de ubicación está permanentemente denegado.');
       }
 
       // Esperar posición
@@ -179,7 +184,8 @@ class MapWidgetState extends State<MapWidget> {
           }
 
           if (_selectedDestination != null) {
-            _getRoute(_selectedDestination!.latitude, _selectedDestination!.longitude);
+            _getRoute(_selectedDestination!.latitude,
+                _selectedDestination!.longitude);
           }
         }
       },
@@ -200,7 +206,8 @@ class MapWidgetState extends State<MapWidget> {
     final originLat = _currentPosition.latitude;
     final originLon = _currentPosition.longitude;
 
-    final String url = 'https://api.mapbox.com/directions/v5/mapbox/driving/$originLon,$originLat;$destinationLon,$destinationLat?alternatives=true&geometries=geojson&steps=true&language=es&access_token=$accessToken';
+    final String url =
+        'https://api.mapbox.com/directions/v5/mapbox/driving/$originLon,$originLat;$destinationLon,$destinationLat?alternatives=true&geometries=geojson&steps=true&language=es&access_token=$accessToken';
 
     final response = await http.get(Uri.parse(url));
 
@@ -257,7 +264,8 @@ class MapWidgetState extends State<MapWidget> {
         punto.latitude,
         punto.longitude,
       );
-      return distancia < 10; // Consideramos que esos puntos ya fueron recorridos
+      return distancia <
+          10; // Consideramos que esos puntos ya fueron recorridos
     }).toList();
   }
 
@@ -291,7 +299,8 @@ class MapWidgetState extends State<MapWidget> {
                 ),
                 children: [
                   TileLayer(
-                    urlTemplate: 'https://api.mapbox.com/styles/v1/mapbox/streets-v11/tiles/256/{z}/{x}/{y}@2x?access_token=$accessToken',
+                    urlTemplate:
+                        'https://api.mapbox.com/styles/v1/mapbox/streets-v11/tiles/256/{z}/{x}/{y}@2x?access_token=$accessToken',
                   ),
                   MarkerLayer(
                     markers: [
@@ -329,7 +338,8 @@ class MapWidgetState extends State<MapWidget> {
                                       // Coloca los botones uno debajo del otro
                                       children: [
                                         Align(
-                                          alignment: Alignment.centerRight, // Alinea el texto del botón a la derecha
+                                          alignment: Alignment
+                                              .centerRight, // Alinea el texto del botón a la derecha
                                           child: TextButton(
                                             onPressed: () {
                                               _selectedDestination = LatLng(
@@ -338,16 +348,22 @@ class MapWidgetState extends State<MapWidget> {
                                               );
 
                                               // Llamar la función para obtener la ruta desde la ubicación actual al comercio
-                                              _getRoute(_selectedDestination!.latitude, _selectedDestination!.longitude);
+                                              _getRoute(
+                                                  _selectedDestination!
+                                                      .latitude,
+                                                  _selectedDestination!
+                                                      .longitude);
                                               Navigator.pop(context);
                                             },
                                             child: const Text('Cómo llegar'),
                                           ),
                                         ),
                                         Align(
-                                          alignment: Alignment.centerRight, // Alinea el texto del botón a la derecha
+                                          alignment: Alignment
+                                              .centerRight, // Alinea el texto del botón a la derecha
                                           child: TextButton(
-                                            onPressed: () => Navigator.pop(context),
+                                            onPressed: () =>
+                                                Navigator.pop(context),
                                             child: const Text('Cerrar'),
                                           ),
                                         ),
@@ -399,7 +415,10 @@ class MapWidgetState extends State<MapWidget> {
                       heroTag: 'center_location',
                       mini: true,
                       onPressed: () {
-                        _mapController.move(_currentPosition, _mapController.camera.zoom); // Mueve el mapa junto con el marcador
+                        _mapController.move(
+                            _currentPosition,
+                            _mapController.camera
+                                .zoom); // Mueve el mapa junto con el marcador
                       },
                       child: const Icon(Icons.my_location),
                     ),
@@ -434,7 +453,8 @@ class MapWidgetState extends State<MapWidget> {
                         ),
                         child: Text(
                           _instruccionActual!,
-                          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+                          style: const TextStyle(
+                              fontSize: 16, fontWeight: FontWeight.w500),
                         ),
                       )
                     : const SizedBox.shrink(),
